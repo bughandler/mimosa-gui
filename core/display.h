@@ -92,14 +92,14 @@ class DisplayServer {
     };
 
     enum class VirtualKeyboardType {
-        KEYBOARD_TYPE_DEFAULT,
-        KEYBOARD_TYPE_MULTILINE,
-        KEYBOARD_TYPE_NUMBER,
-        KEYBOARD_TYPE_NUMBER_DECIMAL,
-        KEYBOARD_TYPE_PHONE,
-        KEYBOARD_TYPE_EMAIL_ADDRESS,
-        KEYBOARD_TYPE_PASSWORD,
-        KEYBOARD_TYPE_URL
+        kDefault,
+        kMultiline,
+        kNumber,
+        kNumberDecimal,
+        kPhone,
+        kEmailAddress,
+        kPassword,
+        kUrl
     };
 
     enum class NativeDialogOptions : std::uint32_t {
@@ -159,7 +159,7 @@ class DisplayServer {
     // Virtual keyboard
     virtual void virtual_keyboard_show(const std::string_view &existing_text,
                                        const Rect2            &screen_rect = Rect2(),
-                                       VirtualKeyboardType     kb_type = KEYBOARD_TYPE_DEFAULT,
+                                       VirtualKeyboardType     kb_type = VirtualKeyboardType::kDefault,
                                        int                     max_length = -1,
                                        int                     cursor_start = -1,
                                        int                     cursor_end = -1);
