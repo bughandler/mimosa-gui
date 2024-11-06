@@ -4,7 +4,8 @@
 #include <string>
 #include <memory>
 #include <vector>
-#include "defines.h"
+#include "help_defines.h"
+#include "type.h"
 
 // The window operation
 class WindowImpl {
@@ -54,8 +55,8 @@ class WindowImpl {
 //  - Window
 //  - Clipboard
 //  - IME
-//  - TTS
 //  - Shell/dialogs (e.g. system tray, file selection dialog, toast and so on)
+//  - TTS
 class DisplayServer {
     static inline DisplayServer *hal_;
 
@@ -90,11 +91,36 @@ class DisplayServer {
         kVetical,
     };
 
+    enum class VirtualKeyboardType {
+        KEYBOARD_TYPE_DEFAULT,
+        KEYBOARD_TYPE_MULTILINE,
+        KEYBOARD_TYPE_NUMBER,
+        KEYBOARD_TYPE_NUMBER_DECIMAL,
+        KEYBOARD_TYPE_PHONE,
+        KEYBOARD_TYPE_EMAIL_ADDRESS,
+        KEYBOARD_TYPE_PASSWORD,
+        KEYBOARD_TYPE_URL
+    };
+
     enum class NativeDialogOptions : std::uint32_t {
         OPT_MULTI_SELECTION,
         OPT_DIR_ONLY,
         OPT_NO_RESOLVE_SYMLINK,
         OPT_NO_CONFIRM_OVERWRITE
+    };
+
+    enum class ClipboardDataFormat {
+        kNone,
+        kText,
+        kUnicodeText,
+        kImage,
+        kFileNames,
+    };
+
+    struct TTSVoiceInfo {
+        std::string name;
+        std::string id;
+        std::string lang;
     };
 
     NativeDialogOptions operator|(NativeDialogOptions lhs, NativeDialogOptions rhs) {
@@ -107,21 +133,38 @@ class DisplayServer {
     virtual bool is_feature_supported(Feature feature) {
         return false;
     }
-
     virtual bool initialize() = 0;
 
-    virtual void        set_window_class_name(const std::string_view cls_name) = 0;
-    virtual std::string get_window_class_name() = 0;
-
+    // Window creation, reference
+    virtual void                        set_window_class_name(const std::string_view cls_name) = 0;
+    virtual std::string                 get_window_class_name() = 0;
     virtual std::shared_ptr<WindowImpl> create_window() = 0;
+    virtual std::shared_ptr<WindowImpl> ref_window_by_id(uintptr_t window_id) = 0;
+    virtual bool                        is_window_valid(uintptr_t window_id) = 0;
 
-    // Screen functions
+    // System theme
+    virtual bool   is_dark_mode() = 0;
+    virtual Color3 get_system_accent_color() = 0;
+    virtual Color3 get_system_base_color() = 0;
+
+    // Screen
     virtual int                 get_screen_count() const = 0;
     virtual int                 get_primary_screen_index() const = 0;
     virtual Orientation         get_scren_orientation(int screen_index) const = 0;
     virtual void                set_screen_orientation(int screen_index, Orientation orientation) = 0;
     virtual std::pair<int, int> get_screen_size(int screen_index) const = 0;
-    virtual int                 get_screen_by_rect(int x, int y);
+    virtual int                 get_screen_by_rect(const Rect2 &rc) = 0;
+    virtual int                 get_screen_by_window(uintptr_t window_id) = 0;
+
+    // Virtual keyboard
+    virtual void virtual_keyboard_show(const std::string_view &existing_text,
+                                       const Rect2            &screen_rect = Rect2(),
+                                       VirtualKeyboardType     kb_type = KEYBOARD_TYPE_DEFAULT,
+                                       int                     max_length = -1,
+                                       int                     cursor_start = -1,
+                                       int                     cursor_end = -1);
+    virtual void virtual_keyboard_hide();
+    virtual int  virtual_keyboard_get_height() const;
 
     // Native dialogs
     virtual std::vector<std::string> get_open_file_names(uintptr_t              parent_window_id,
@@ -139,7 +182,29 @@ class DisplayServer {
                                                             const std::string_view root,
                                                             NativeDialogOptions    options) = 0;
 
-    virtual void get_clipboard();
+    // Clipboard
+    virtual ClipboardDataFormat      get_clipboard_data_format() = 0;
+    virtual std::string              get_clipboard_text() = 0;
+    virtual std::wstring             get_clipboard_unicode_text();
+    virtual SimpleImage              get_clipboard_image();
+    virtual std::vector<std::string> get_clipboard_file_names() = 0;
+    virtual void                     set_clipboard_text(const std::string_view text) = 0;
+
+    // TTS
+    virtual std::vector<TTSVoiceInfo> tts_get_voices() const;
+    virtual std::string               tts_get_voice_id_from_lang(const std::string_view lang_name) const;
+    virtual bool                      tts_is_speaking() const;
+    virtual bool                      tts_is_paused() const;
+    virtual void                      tts_speak(const std::string_view &text,
+                                                const std::string_view &voice_id,
+                                                int                     volume = 50,
+                                                float                   pitch = 1.f,
+                                                float                   rate = 1.f,
+                                                int                     utterance_id = 0,
+                                                bool                    interrupt = false);
+    virtual void                      tts_pause();
+    virtual void                      tts_resume();
+    virtual void                      tts_stop();
 };
 
 #endif //_DISPLAY_SERVER_H_
