@@ -1,0 +1,22 @@
+BasedOnStyle: LLVM
+AlignConsecutiveMacros: true
+AlignConsecutiveDeclarations: true
+AlignEscapedNewlines: Left
+AllowShortBlocksOnASingleLine: true
+AllowShortFunctionsOnASingleLine: Empty
+# AllowShortIfStatementsOnASingleLine: WithoutElse
+# AllowShortLoopsOnASingleLine: true
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AlwaysBreakTemplateDeclarations: Yes
+BinPackArguments: false
+BinPackParameters: false
+ExperimentalAutoDetectBinPacking: true
+Cpp11BracedListStyle: true
+SortIncludes: false
+ColumnLimit: 120
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+
+...
