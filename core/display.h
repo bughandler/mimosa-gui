@@ -1,5 +1,6 @@
 #ifndef _DISPLAY_SERVER_H_
 #define _DISPLAY_SERVER_H_
+namespace mimosa {
 
 #include <string>
 #include <memory>
@@ -158,7 +159,7 @@ class DisplayServer {
 
     // Virtual keyboard
     virtual void virtual_keyboard_show(const std::string_view &existing_text,
-                                       const Rect2            &screen_rect = Rect2(),
+                                       const Rect2 &           screen_rect = Rect2(),
                                        VirtualKeyboardType     kb_type = VirtualKeyboardType::kDefault,
                                        int                     max_length = -1,
                                        int                     cursor_start = -1,
@@ -186,7 +187,7 @@ class DisplayServer {
     virtual ClipboardDataFormat      get_clipboard_data_format() = 0;
     virtual std::string              get_clipboard_text() = 0;
     virtual std::wstring             get_clipboard_unicode_text();
-    virtual SimpleImage              get_clipboard_image();
+    virtual Image                    get_clipboard_image();
     virtual std::vector<std::string> get_clipboard_file_names() = 0;
     virtual void                     set_clipboard_text(const std::string_view text) = 0;
 
@@ -207,4 +208,5 @@ class DisplayServer {
     virtual void                      tts_stop();
 };
 
+} // namespace mimosa
 #endif //_DISPLAY_SERVER_H_

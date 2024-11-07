@@ -1,5 +1,6 @@
 #ifndef _CORE_TYPE_H_
 #define _CORE_TYPE_H_
+namespace mimosa {
 
 #include <vector>
 
@@ -12,7 +13,7 @@ struct Color3 {
     int r = 0, g = 0, b = 0;
 };
 
-struct SimpleImage {
+struct Image {
     enum class Format {
         // RGB (no alpha channel)
         kRGB8,
@@ -25,4 +26,5 @@ struct SimpleImage {
     std::vector<uint8_t> data;
 };
 
+} // namespace mimosa
 #endif //_CORE_TYPE_H_
