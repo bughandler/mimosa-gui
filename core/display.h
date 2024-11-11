@@ -5,13 +5,14 @@ namespace mimosa {
 #include <string>
 #include <memory>
 #include <vector>
-#include "help_defines.h"
+#include <functional>
+#include "base/help_defines.h"
 #include "type.h"
 
-// The window operation
-class WindowImpl {
+// The platform-dependent window
+class PlatformWindow {
   public:
-    enum class WindowMode {
+    enum class Mode {
         kMinimized,
         kNormal,
         kMaximized,
@@ -19,13 +20,13 @@ class WindowImpl {
         kExclusiveFullscreen,
     };
 
-    enum class WindowFlags : uint32_t {
+    enum class Flags : uint32_t {
 
     };
 
     virtual uintptr_t           window_id() const = 0;
-    virtual void                show(WindowMode mode) = 0;
-    virtual WindowMode          get_show_mode() const = 0;
+    virtual void                show(Mode mode) = 0;
+    virtual Mode                get_show_mode() const = 0;
     virtual void                close() = 0;
     virtual void                hide() = 0;
     virtual bool                bring_to_foreground() = 0;
@@ -58,13 +59,14 @@ class WindowImpl {
 //  - IME
 //  - Shell/dialogs (e.g. system tray, file selection dialog, toast and so on)
 //  - TTS
-class DisplayServer {
-    static inline DisplayServer *hal_;
+class PlatformDisplayServer {
+    static inline PlatformDisplayServer *instance_;
 
   public:
-    inline DisplayServer *get_instance() {
-        return hal_;
-    }
+    static PlatformDisplayServer *get_singleton();
+
+    PlatformDisplayServer();
+    ~PlatformDisplayServer();
 
     enum class Feature {
         kHIDPI,
@@ -111,7 +113,7 @@ class DisplayServer {
     };
 
     enum class ClipboardDataFormat {
-        kNone,
+        kUnknown,
         kText,
         kUnicodeText,
         kImage,
@@ -124,6 +126,20 @@ class DisplayServer {
         std::string lang;
     };
 
+    enum class ToastPos {
+        kDefault,
+        kCenter,
+        kBottom,
+        kTop,
+    };
+
+    enum class ToastAction {
+        kActivate,
+        kDismiss,
+    };
+
+    using ToastNofiticationCallback = std::function<void(ToastAction, int)>;
+
     NativeDialogOptions operator|(NativeDialogOptions lhs, NativeDialogOptions rhs) {
         return ENUM_CLASS_OR(NativeDialogOptions, lhs, rhs);
     }
@@ -131,22 +147,20 @@ class DisplayServer {
         return ENUM_CLASS_AND(NativeDialogOptions, lhs, rhs);
     }
 
-    virtual bool is_feature_supported(Feature feature) {
-        return false;
-    }
+    virtual bool is_feature_supported(Feature feature);
     virtual bool initialize() = 0;
 
     // Window creation, reference
-    virtual void                        set_window_class_name(const std::string_view cls_name) = 0;
-    virtual std::string                 get_window_class_name() = 0;
-    virtual std::shared_ptr<WindowImpl> create_window() = 0;
-    virtual std::shared_ptr<WindowImpl> ref_window_by_id(uintptr_t window_id) = 0;
-    virtual bool                        is_window_valid(uintptr_t window_id) = 0;
+    virtual void                            set_window_class_name(const std::string_view cls_name);
+    virtual std::string                     get_window_class_name() const;
+    virtual std::shared_ptr<PlatformWindow> create_window(uintptr_t parent_window_id, const std::string_view title, PlatformWindow::Flags flags);
+    virtual std::shared_ptr<PlatformWindow> ref_window_by_id(uintptr_t window_id) const;
+    virtual bool                            is_window_valid(uintptr_t window_id) const;
 
     // System theme
-    virtual bool   is_dark_mode() = 0;
-    virtual Color3 get_system_accent_color() = 0;
-    virtual Color3 get_system_base_color() = 0;
+    virtual bool   is_dark_mode();
+    virtual Color3 get_system_accent_color();
+    virtual Color3 get_system_base_color();
 
     // Screen
     virtual int                 get_screen_count() const = 0;
@@ -154,6 +168,9 @@ class DisplayServer {
     virtual Orientation         get_scren_orientation(int screen_index) const = 0;
     virtual void                set_screen_orientation(int screen_index, Orientation orientation) = 0;
     virtual std::pair<int, int> get_screen_size(int screen_index) const = 0;
+    virtual std::pair<int, int> get_screen_work_size(int screen_index) const = 0;
+    virtual int                 get_screen_dpi(int screen_index) const = 0;
+    virtual int                 get_screen_scale_factor(int screen_index) const = 0;
     virtual int                 get_screen_by_rect(const Rect2 &rc) = 0;
     virtual int                 get_screen_by_window(uintptr_t window_id) = 0;
 
@@ -172,24 +189,27 @@ class DisplayServer {
                                                          const std::string_view caption,
                                                          const std::string_view root,
                                                          const std::string_view filters,
-                                                         NativeDialogOptions    options) = 0;
+                                                         NativeDialogOptions    options);
     virtual std::string              get_save_file_name(uintptr_t              parent_window_id,
                                                         const std::string_view caption,
                                                         const std::string_view root,
                                                         const std::string_view filters,
-                                                        NativeDialogOptions    options) = 0;
+                                                        NativeDialogOptions    options);
     virtual std::string              get_existing_directory(uintptr_t              parent_window_id,
                                                             const std::string_view caption,
                                                             const std::string_view root,
-                                                            NativeDialogOptions    options) = 0;
+                                                            NativeDialogOptions    options);
 
     // Clipboard
-    virtual ClipboardDataFormat      get_clipboard_data_format() = 0;
-    virtual std::string              get_clipboard_text() = 0;
-    virtual std::wstring             get_clipboard_unicode_text();
-    virtual Image                    get_clipboard_image();
-    virtual std::vector<std::string> get_clipboard_file_names() = 0;
-    virtual void                     set_clipboard_text(const std::string_view text) = 0;
+    virtual bool                     is_clipboard_has_data() const;
+    virtual ClipboardDataFormat      get_clipboard_data_format() const;
+    virtual std::string              get_clipboard_text() const;
+    virtual std::wstring             get_clipboard_unicode_text() const;
+    virtual Image                    get_clipboard_image() const;
+    virtual std::vector<std::string> get_clipboard_file_names() const;
+    virtual void                     set_clipboard_text(const std::string_view text);
+    virtual void                     set_clipboard_unicode_text(const std::wstring_view text);
+    virtual void                     set_clipboard_image(const Image &text);
 
     // TTS
     virtual std::vector<TTSVoiceInfo> tts_get_voices() const;
@@ -206,6 +226,16 @@ class DisplayServer {
     virtual void                      tts_pause();
     virtual void                      tts_resume();
     virtual void                      tts_stop();
+
+    // Toast notification
+    virtual bool toast_notification_show(const std::string_view        title,
+                                         const std::string_view        text,
+                                         const Image &                 image,
+                                         ToastPos                      pos,
+                                         int                           expire_ms,
+                                         bool                          has_audio,
+                                         std::vector<std::string_view> actions,
+                                         ToastNofiticationCallback &&  handler);
 };
 
 } // namespace mimosa
