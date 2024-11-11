@@ -192,12 +192,18 @@ bool PlatformDisplayServer::toast_notification_show(const std::string_view      
                                                     const std::string_view        text,
                                                     const Image &                 image,
                                                     ToastPos                      pos,
-                                                    int                           expire_ms,
+                                                    int                           timeout_ms,
                                                     bool                          has_audio,
                                                     std::vector<std::string_view> actions,
                                                     ToastNofiticationCallback &&  handler) {
     LOG_WARNING("This display server doesn't support toast notification.");
     return false;
+}
+
+std::shared_ptr<mimosa::PlatformTrayIcon> PlatformDisplayServer::create_system_tray_icon(const Image &          icon,
+                                                                                         const std::string_view hint) {
+    LOG_WARNING("This display server doesn't support system tray icon.");
+    return nullptr;
 }
 
 }; // namespace mimosa

@@ -4,6 +4,10 @@ namespace mimosa {
 
 #include <vector>
 
+struct Position2 {
+    int x = 0, y = 0;
+};
+
 struct Rect2 {
     int x = 0, y = 0;
     int width = 0, height = 0;
