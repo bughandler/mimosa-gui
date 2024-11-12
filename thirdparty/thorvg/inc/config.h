@@ -4,7 +4,7 @@
 #define THORVG_SW_RASTER_SUPPORT
 #define THORVG_SVG_LOADER_SUPPORT
 #define THORVG_JPG_LOADER_SUPPORT
-#define THORVG_LOTTIE_LOADER_SUPPORT
+//#define THORVG_LOTTIE_LOADER_SUPPORT
 #define THORVG_THREAD_SUPPORT
 
 // Added conditionally if webp module is enabled.

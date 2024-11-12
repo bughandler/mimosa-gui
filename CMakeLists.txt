@@ -17,9 +17,16 @@ set(CMAKE_CXX_STANDARD 17)
 set(MAIN_MODULE_NAME "mimosa")
 
 # Build settings
+include(CMakeDependentOption)
+
 set(BUILD_TYPE "library" CACHE STRING "Choose the build type")
 set_property(CACHE BUILD_TYPE PROPERTY STRINGS library extension)
 option(STATIC_BUILD "Build mimosa-gui statically" OFF)
+option(SVG_ENABLED "Enable SVG support" ON)
+option(LOTTIE_ENABLED "Enable Lottie support" ${SVG_ENABLED})
+if(NOT SVG_ENABLED)
+	mark_as_advanced(LOTTIE_ENABLED)
+endif()
 
 # Check compilers
 set( compiler_is_clang "$<OR:$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:Clang>>" )
@@ -79,14 +86,28 @@ add_library(${MAIN_MODULE_NAME} SHARED ${MAIN_CPP_SOURCES}
 									   ${THIRDPARTY_SOURCES}
 									   ${THIRDPARTY_HEADERS})
 target_include_directories(${MAIN_MODULE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
-													   ${CMAKE_CURRENT_SOURCE_DIR}/thidparty)
+													   ${CMAKE_CURRENT_SOURCE_DIR}/thidparty
+													   ${THIRDPARTY_INCLUDE_DIRS})
+target_compile_definitions(${MAIN_MODULE_NAME} PRIVATE ${THIRDPARTY_COMPILE_DEFINIES})
 target_compile_options(${MAIN_MODULE_NAME} PRIVATE
     # MSVC only
     $<${compiler_is_msvc}:
         # /W4
-        -D_TAGET_PY_VERSION=${BUILD_PY_VERSION}
         -D_HAS_EXCEPTIONS=0 # Disable C++ exceptions.
         /utf-8 # Indicate source code is encoding with utf-8
+
+		# Disable warnings which we don't plan to fix.
+        /wd4100  # C4100 (unreferenced formal parameter): Doesn't play nice with polymorphism.
+        /wd4127  # C4127 (conditional expression is constant)
+        /wd4201  # C4201 (non-standard nameless struct/union): Only relevant for C89.
+        /wd4244  # C4244 C4245 C4267 (narrowing conversions): Unavoidable at this scale.
+        /wd4245
+        /wd4267
+        /wd4305  # C4305 (truncation): double to float or real_t, too hard to avoid.
+        /wd4514  # C4514 (unreferenced inline function has been removed)
+        /wd4714  # C4714 (function marked as __forceinline not inlined)
+        /wd4820  # C4820 (padding added after construct)
+        /wd4996
     >
 
     $<$<NOT:${compiler_is_msvc}>:
