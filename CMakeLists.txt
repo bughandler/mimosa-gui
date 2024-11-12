@@ -59,6 +59,22 @@ elseif(APPLE)
 	set(PLATFORM_NAME "osx")
 endif()
 
+# https://gist.github.com/ronald112/77d9d1bbf0710f7b099a481f92063829
+MACRO(SUBDIRLIST result firstdir curdir)
+    file(GLOB ENDF6_SRC_TOP RELATIVE
+        ${curdir} ${curdir}/*)
+    file(GLOB_RECURSE ENDF6_SRC_NESTED ${curdir}/*)
+    set(children ${ENDF6_SRC_TOP} ${ENDF6_SRC_NESTED})
+
+    SET(dirlist "${firstdir}")
+    FOREACH(child ${children})
+        IF(IS_DIRECTORY ${curdir}/${child})
+            LIST(APPEND dirlist ${curdir}/${child})
+        ENDIF()
+    ENDFOREACH()
+    SET(${result} ${dirlist})
+ENDMACRO()
+
 # Source files
 function(_expand_files OUT_VAR EXPR_LIST)
 	foreach(expr in ${EXPR_LIST})
@@ -88,7 +104,9 @@ add_library(${MAIN_MODULE_NAME} SHARED ${MAIN_CPP_SOURCES}
 target_include_directories(${MAIN_MODULE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
 													   ${CMAKE_CURRENT_SOURCE_DIR}/thidparty
 													   ${THIRDPARTY_INCLUDE_DIRS})
-target_compile_definitions(${MAIN_MODULE_NAME} PRIVATE ${THIRDPARTY_COMPILE_DEFINIES})
+target_compile_definitions(${MAIN_MODULE_NAME} PRIVATE $<$<BOOL:${SVG_ENABLED}>:-D SVG_ENABLED> 
+                                                       $<$<BOOL:${LOTTIE_ENABLED}>:-D LOTTIE_ENABLED>  
+													   ${THIRDPARTY_COMPILE_DEFINIES})
 target_compile_options(${MAIN_MODULE_NAME} PRIVATE
     # MSVC only
     $<${compiler_is_msvc}:
@@ -97,6 +115,8 @@ target_compile_options(${MAIN_MODULE_NAME} PRIVATE
         /utf-8 # Indicate source code is encoding with utf-8
 
 		# Disable warnings which we don't plan to fix.
+		/wd4018
+		/wd4065
         /wd4100  # C4100 (unreferenced formal parameter): Doesn't play nice with polymorphism.
         /wd4127  # C4127 (conditional expression is constant)
         /wd4201  # C4201 (non-standard nameless struct/union): Only relevant for C89.

@@ -1,0 +1,17 @@
+diff --git forkSrcPrefix/thirdparty/thorvg/src/loaders/lottie/jerryscript/jerry-core/jmem/jmem-heap.cpp forkDstPrefix/thirdparty/thorvg/src/loaders/lottie/jerryscript/jerry-core/jmem/jmem-heap.cpp
+index a5a3713405ceb3a60ac7898763ea9b0288401df1..154e485b76e8a9c209d6465ecca1a532b3c7bd78 100644
+--- forkSrcPrefix/thirdparty/thorvg/src/loaders/lottie/jerryscript/jerry-core/jmem/jmem-heap.cpp
++++ forkDstPrefix/thirdparty/thorvg/src/loaders/lottie/jerryscript/jerry-core/jmem/jmem-heap.cpp
+@@ -722,6 +722,12 @@ jmem_is_heap_pointer (const void *pointer) /**< pointer */
+   return true;
+ #endif /* !JERRY_SYSTEM_ALLOCATOR */
+ } /* jmem_is_heap_pointer */
++#else
++bool jmem_is_heap_pointer(const void* pointer) /**< pointer */ 
++{
++    JERRY_UNUSED(pointer);
++    return true;
++}
+ #endif /* !JERRY_NDEBUG */
+ 
+ 

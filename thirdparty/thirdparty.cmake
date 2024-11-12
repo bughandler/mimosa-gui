@@ -5,6 +5,7 @@ set(THIRDPARTY_INCLUDE_DIRS)
 set(THIRDPARTY_COMPILE_DEFINIES)
 file(GLOB_RECURSE THIRDPARTY_HEADERS CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/*.h**)
 
+
 if(SVG_ENABLED)
     set(THORVG_SRCS  
         # common
@@ -24,7 +25,7 @@ if(SVG_ENABLED)
         "src/loaders/jpg/tvgJpgLoader.cpp" 
         # renderer common
         "src/renderer/tvgAccessor.cpp" 
-        # "src/renderer/tvgAnimation.cpp" 
+        "src/renderer/tvgAnimation.cpp" 
         "src/renderer/tvgCanvas.cpp" 
         "src/renderer/tvgFill.cpp" 
         # "src/renderer/tvgGlCanvas.cpp" 
@@ -60,7 +61,6 @@ if(SVG_ENABLED)
         "src/loaders/raw" 
         "src/loaders/external_png" 
         "src/loaders/jpg")
-
     list(TRANSFORM THORVG_SRCS PREPEND ${CMAKE_CURRENT_LIST_DIR}/thorvg/)
     list(TRANSFORM THORVG_INCLUDES PREPEND ${CMAKE_CURRENT_LIST_DIR}/thorvg/)
 
@@ -68,4 +68,33 @@ if(SVG_ENABLED)
     list(APPEND THIRDPARTY_INCLUDE_DIRS ${THORVG_INCLUDES})
 
     list(APPEND THIRDPARTY_COMPILE_DEFINIES -D TVG_STATIC)
+    
+    if(LOTTIE_ENABLED)
+        set(THORVG_LOTTIE_INCLUDES
+            "src/loaders/lottie"
+            "src/loaders/lottie/jerryscript"
+            "src/loaders/lottie/rapidjson"
+            "src/loaders/lottie/jerryscript/jerry-core"
+            "src/loaders/lottie/jerryscript/jerry-core/api"
+            "src/loaders/lottie/jerryscript/jerry-core/ecma"
+            "src/loaders/lottie/jerryscript/jerry-core/include"
+            "src/loaders/lottie/jerryscript/jerry-core/jcontext"
+            "src/loaders/lottie/jerryscript/jerry-core/jmem"
+            "src/loaders/lottie/jerryscript/jerry-core/jrt"
+            "src/loaders/lottie/jerryscript/jerry-core/lit"
+            "src/loaders/lottie/jerryscript/jerry-core/parser"
+            "src/loaders/lottie/jerryscript/jerry-core/vm"
+            "src/loaders/lottie/jerryscript/jerry-core/ecma/base"
+            "src/loaders/lottie/jerryscript/jerry-core/ecma/builtin-objects"
+            "src/loaders/lottie/jerryscript/jerry-core/ecma/operations"
+            "src/loaders/lottie/jerryscript/jerry-core/ecma/builtin-objects/typedarray"
+            "src/loaders/lottie/jerryscript/jerry-core/parser/js"
+            "src/loaders/lottie/jerryscript/jerry-core/parser/regexp")
+        list(TRANSFORM THORVG_LOTTIE_INCLUDES PREPEND ${CMAKE_CURRENT_LIST_DIR}/thorvg/)
+
+        file(GLOB_RECURSE THORVG_LOTTIE_SRCS CONFIGURE_DEPENDS ${CMAKE_CURRENT_LIST_DIR}/thorvg/src/loaders/lottie/*.c**)
+
+        list(APPEND THIRDPARTY_SOURCES ${THORVG_LOTTIE_SRCS})
+        list(APPEND THIRDPARTY_INCLUDE_DIRS ${THORVG_LOTTIE_INCLUDES})
+    endif()
 endif()

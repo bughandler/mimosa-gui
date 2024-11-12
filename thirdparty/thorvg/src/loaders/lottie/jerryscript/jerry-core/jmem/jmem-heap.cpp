@@ -722,6 +722,12 @@ jmem_is_heap_pointer (const void *pointer) /**< pointer */
   return true;
 #endif /* !JERRY_SYSTEM_ALLOCATOR */
 } /* jmem_is_heap_pointer */
+#else
+bool jmem_is_heap_pointer(const void* pointer) /**< pointer */ 
+{
+    JERRY_UNUSED(pointer);
+    return true;
+}
 #endif /* !JERRY_NDEBUG */
 
 
