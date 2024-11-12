@@ -1,5 +1,8 @@
 #ifndef _CORE_DEFINES_H_
 #define _CORE_DEFINES_H_
+
+#include <type_traits>
+
 namespace mimosa {
 
 // Turn argument to string constant:

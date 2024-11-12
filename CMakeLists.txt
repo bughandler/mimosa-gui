@@ -61,20 +61,23 @@ endif()
 
 # Source files
 function(_expand_files OUT_VAR EXPR_LIST)
+	set(result)
 	foreach(expr in ${EXPR_LIST})
 		file(GLOB_RECURSE expand_files CONFIGURE_DEPENDS ${expr})
-		list(APPEND OUT_VAR ${expand_files})
+		list(APPEND result ${expand_files})
 	endforeach()
+	set(${OUT_VAR} ${result} PARENT_SCOPE)
 endfunction()
 file(GLOB_RECURSE MAIN_CPP_SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/main/*.c**)
 file(GLOB_RECURSE MAIN_CPP_HEADERS CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/main/*.h**)
 _expand_files(CORE_CPP_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/core/*.c**
 							   ${CMAKE_CURRENT_SOURCE_DIR}/core/base/*.c**
-							   ${CMAKE_CURRENT_SOURCE_DIR}/core/${PLATFORM_NAME}/*.c**)
+							   ${CMAKE_CURRENT_SOURCE_DIR}/core/platform/${PLATFORM_NAME}/*.c**)
 _expand_files(CORE_CPP_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/core/*.h**
 							   ${CMAKE_CURRENT_SOURCE_DIR}/core/base/*.h**
-							   ${CMAKE_CURRENT_SOURCE_DIR}/core/base/${PLATFORM_NAME}/*.h**)
+							   ${CMAKE_CURRENT_SOURCE_DIR}/core/platform/${PLATFORM_NAME}/*.h**)
 
+message(STATUS ${CORE_CPP_SOURCES})
 # Include thirdparty compiling script
 include(thirdparty/thirdparty.cmake)
 

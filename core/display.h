@@ -1,13 +1,15 @@
 #ifndef _DISPLAY_SERVER_H_
 #define _DISPLAY_SERVER_H_
-namespace mimosa {
 
+#include <cstdint>
 #include <string>
 #include <memory>
 #include <vector>
 #include <functional>
-#include "base/help_defines.h"
-#include "type.h"
+#include <core/base/help_defines.h>
+#include <core/type.h>
+
+namespace mimosa {
 
 // The platform-dependent window
 class PlatformWindow {
@@ -47,6 +49,8 @@ class PlatformWindow {
     virtual bool                request_attention() = 0;
     virtual void                popup_at(int x, int y) = 0;
     virtual std::string         get_class_name() = 0;
+    virtual Flags               get_flags() const = 0;
+    virtual void                set_flags(Flags flags) = 0;
     virtual void                set_title(const std::string_view title) = 0;
     virtual std::string         get_title() const = 0;
     virtual void                set_min_size(int w, int h) = 0;
@@ -126,7 +130,6 @@ class PlatformDisplayServer {
 
     enum class Feature {
         kHIDPI,
-        kScreenOrientation,
         kDarkMode,
         kSubWindow,
         kWindowedWindow,
@@ -142,7 +145,7 @@ class PlatformDisplayServer {
         kNativeDirDialog,
         kVirtualKeyboard,
         kIME,
-        kTTS
+        kTTS,
     };
 
     enum class Orientation {
@@ -158,7 +161,7 @@ class PlatformDisplayServer {
         kPhone,
         kEmailAddress,
         kPassword,
-        kUrl
+        kUrl,
     };
 
     enum class NativeDialogOptions : std::uint32_t {
@@ -202,8 +205,8 @@ class PlatformDisplayServer {
 
     using ToastNofiticationCallback = std::function<void(ToastAction, int)>;
 
-    virtual bool is_feature_supported(Feature feature);
     virtual bool initialize() = 0;
+    virtual bool is_feature_supported(Feature feature) const;
 
     // Window creation, reference
     virtual void        set_window_class_name(const std::string_view cls_name);
@@ -263,9 +266,9 @@ class PlatformDisplayServer {
     virtual std::wstring             get_clipboard_unicode_text() const;
     virtual Image                    get_clipboard_image() const;
     virtual std::vector<std::string> get_clipboard_file_names() const;
-    virtual void                     set_clipboard_text(const std::string_view text);
-    virtual void                     set_clipboard_unicode_text(const std::wstring_view text);
-    virtual void                     set_clipboard_image(const Image &text);
+    virtual bool                     set_clipboard_text(const std::string_view text);
+    virtual bool                     set_clipboard_unicode_text(const std::wstring_view text);
+    virtual bool                     set_clipboard_image(const Image &text);
 
     // TTS
     virtual std::vector<TTSVoiceInfo> tts_get_voices() const;

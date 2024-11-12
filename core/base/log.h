@@ -44,7 +44,7 @@ namespace mimosa {
 #endif // !LOG_OUTPUT_DEVICE
 #endif // NO_LOG
 
-void _log_printf(const char *filename, const char *func, const char *line, const char *format, ...);
+void _log_printf(const char *filename, const char *func, int line, const char *format, ...);
 
 #if LOG_FILTER_LEVEL <= LOG_LEVEL_DEBUG
 #define LOG_DEBUG(_fmt_, ...) _log_printf(__FILE__, __FUNCTION__, __LINE__, _fmt_, ##__VA_ARGS__)

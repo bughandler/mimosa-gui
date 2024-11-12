@@ -1,7 +1,7 @@
-namespace mimosa {
-
+#include <core/base/log.h>
 #include "display.h"
-#include "base/log.h"
+
+namespace mimosa {
 
 PlatformDisplayServer *PlatformDisplayServer::get_singleton() {
     return instance_;
@@ -16,7 +16,7 @@ PlatformDisplayServer::~PlatformDisplayServer() {
     instance_ = nullptr;
 }
 
-bool PlatformDisplayServer::is_feature_supported(Feature feature) {
+bool PlatformDisplayServer::is_feature_supported(Feature feature) const {
     return false;
 }
 
@@ -133,17 +133,19 @@ std::vector<std::string> PlatformDisplayServer::get_clipboard_file_names() const
     return {};
 }
 
-void PlatformDisplayServer::set_clipboard_text(const std::string_view text) {
+bool PlatformDisplayServer::set_clipboard_text(const std::string_view text) {
     LOG_WARNING("This display server doesn't support writting clipboard for text.");
-    return {};
+    return false;
 }
 
-void PlatformDisplayServer::set_clipboard_unicode_text(const std::wstring_view text) {
+bool PlatformDisplayServer::set_clipboard_unicode_text(const std::wstring_view text) {
     LOG_WARNING("This display server doesn't support writting clipboard for unicode text.");
+    return false;
 }
 
-void PlatformDisplayServer::set_clipboard_image(const Image &text) {
+bool PlatformDisplayServer::set_clipboard_image(const Image &text) {
     LOG_WARNING("This display server doesn't support writting clipboard for image.");
+    return false;
 }
 
 std::vector<mimosa::PlatformDisplayServer::TTSVoiceInfo> PlatformDisplayServer::tts_get_voices() const {
