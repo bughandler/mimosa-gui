@@ -59,22 +59,6 @@ elseif(APPLE)
 	set(PLATFORM_NAME "osx")
 endif()
 
-# https://gist.github.com/ronald112/77d9d1bbf0710f7b099a481f92063829
-MACRO(SUBDIRLIST result firstdir curdir)
-    file(GLOB ENDF6_SRC_TOP RELATIVE
-        ${curdir} ${curdir}/*)
-    file(GLOB_RECURSE ENDF6_SRC_NESTED ${curdir}/*)
-    set(children ${ENDF6_SRC_TOP} ${ENDF6_SRC_NESTED})
-
-    SET(dirlist "${firstdir}")
-    FOREACH(child ${children})
-        IF(IS_DIRECTORY ${curdir}/${child})
-            LIST(APPEND dirlist ${curdir}/${child})
-        ENDIF()
-    ENDFOREACH()
-    SET(${result} ${dirlist})
-ENDMACRO()
-
 # Source files
 function(_expand_files OUT_VAR EXPR_LIST)
 	foreach(expr in ${EXPR_LIST})
