@@ -46,7 +46,7 @@ namespace mimosa {
 #define unlikely(x) x
 #endif
 
-#define MAKE_ENUM_CLASS_BITOPS(ENUM_CLS)                                                   \
+#define DECL_ENUM_CLASS_BITOPS(ENUM_CLS)                                                   \
     friend ENUM_CLS operator|(ENUM_CLS lhs, ENUM_CLS rhs) {                                \
         return static_cast<ENUM_CLS>(static_cast<std::underlying_type_t<ENUM_CLS>>(lhs) |  \
                                      static_cast<std::underlying_type_t<ENUM_CLS>>(rhs));  \

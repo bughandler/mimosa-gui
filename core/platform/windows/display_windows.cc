@@ -27,18 +27,4 @@ std::string DisplayServerWindows::get_window_class_name() const {
     return windowClassName_;
 }
 
-std::shared_ptr<PlatformWindow> DisplayServerWindows::create_window(uintptr_t              parent_window_id,
-                                                                    const std::string_view title,
-                                                                    PlatformWindow::Flags  flags) {
-    return nullptr;
-}
-
-std::shared_ptr<PlatformWindow> DisplayServerWindows::ref_window_by_id(uintptr_t window_id) const {
-    return nullptr;
-}
-
-bool DisplayServerWindows::is_window_valid(uintptr_t window_id) const {
-    return false;
-}
-
 }; // namespace mimosa

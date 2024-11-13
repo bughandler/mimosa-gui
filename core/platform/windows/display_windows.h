@@ -17,10 +17,7 @@ class DisplayServerWindows : public PlatformDisplayServer {
 
     virtual void        set_window_class_name(const std::string_view cls_name) override;
     virtual std::string get_window_class_name() const override;
-    virtual std::shared_ptr<PlatformWindow>
-    create_window(uintptr_t parent_window_id, const std::string_view title, PlatformWindow::Flags flags) override;
-    virtual std::shared_ptr<PlatformWindow> ref_window_by_id(uintptr_t window_id) const override;
-    virtual bool                            is_window_valid(uintptr_t window_id) const override;
+
 };
 
 };     // namespace mimosa

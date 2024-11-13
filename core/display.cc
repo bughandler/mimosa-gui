@@ -29,21 +29,127 @@ std::string PlatformDisplayServer::get_window_class_name() const {
     return {};
 }
 
-std::shared_ptr<PlatformWindow> PlatformDisplayServer::create_window(uintptr_t              parent_window_id,
-                                                                     const std::string_view title,
-                                                                     PlatformWindow::Flags  flags) {
+uintptr_t PlatformDisplayServer::window_create(uintptr_t    parent_window_id,
+                                               const Rect2 &rect,
+                                               WindowMode   mode,
+                                               WindowFlags  flags,
+                                               bool         mark_as_primary) {
     LOG_WARNING("This display server doesn't support window creation.");
-    return nullptr;
+    return {};
 }
 
-std::shared_ptr<mimosa::PlatformWindow> PlatformDisplayServer::ref_window_by_id(uintptr_t window_id) const {
-    LOG_WARNING("This display server doesn't support window manager.");
-    return nullptr;
+void PlatformDisplayServer::window_close(uintptr_t window_id) {
+    LOG_WARNING("This display server doesn't support window closing.");
 }
 
-bool PlatformDisplayServer::is_window_valid(uintptr_t window_id) const {
+bool PlatformDisplayServer::window_is_valid(uintptr_t window_id) const {
     LOG_WARNING("This display server doesn't support window checking.");
     return false;
+}
+
+std::string PlatformDisplayServer::window_get_class_name(uintptr_t window_id) {
+    LOG_WARNING("This display server doesn't support window class name.");
+    return {};
+}
+
+void PlatformDisplayServer::window_show(uintptr_t window_id, WindowMode mode) {
+    LOG_WARNING("This display server doesn't support window mode.");
+}
+
+PlatformDisplayServer::WindowMode PlatformDisplayServer::window_get_show_mode(uintptr_t window_id) const {
+    LOG_WARNING("This display server doesn't support window mode.");
+    return WindowMode::kInvalid;
+}
+
+bool PlatformDisplayServer::window_bring_to_foreground(uintptr_t window_id) {
+    LOG_WARNING("This display server doesn't support bring window to foreground.");
+    return false;
+}
+
+bool PlatformDisplayServer::window_request_attention(uintptr_t window_id) {
+    LOG_WARNING("This display server doesn't support window attenation.");
+    return false;
+}
+
+void PlatformDisplayServer::window_popup_at(uintptr_t window_id, int x, int y) {
+    LOG_WARNING("This display server doesn't support window popup.");
+}
+
+PlatformDisplayServer::WindowFlags PlatformDisplayServer::window_get_flags(uintptr_t window_id) const {
+    LOG_WARNING("This display server doesn't support window flags.");
+    return WindowFlags::WINDOW_INVALID_FLAGS;
+}
+
+void PlatformDisplayServer::window_set_flags(uintptr_t window_id, WindowFlags flags) {
+    LOG_WARNING("This display server doesn't support window flags.");
+}
+
+void PlatformDisplayServer::window_set_title(uintptr_t window_id, const std::string_view title) {
+    LOG_WARNING("This display server doesn't support window title.");
+}
+
+std::string PlatformDisplayServer::window_get_title(uintptr_t window_id) const {
+    LOG_WARNING("This display server doesn't support window title.");
+    return {};
+}
+
+void PlatformDisplayServer::window_set_min_size(uintptr_t window_id, int w, int h) {
+    LOG_WARNING("This display server doesn't support window min-size.");
+}
+
+std::pair<int, int> PlatformDisplayServer::window_get_min_size(uintptr_t window_id) const {
+    LOG_WARNING("This display server doesn't support window min-size.");
+    return {0, 0};
+}
+
+void PlatformDisplayServer::window_set_max_size(uintptr_t window_id, int w, int h) {
+    LOG_WARNING("This display server doesn't support window max-size.");
+}
+
+std::pair<int, int> PlatformDisplayServer::window_get_max_size(uintptr_t window_id) const {
+    LOG_WARNING("This display server doesn't support window max-size.");
+    return {0, 0};
+}
+
+void PlatformDisplayServer::window_set_size(uintptr_t window_id, int w, int h) {
+    LOG_WARNING("This display server doesn't support window size.");
+}
+
+std::pair<int, int> PlatformDisplayServer::window_get_size(uintptr_t window_id) const {
+    LOG_WARNING("This display server doesn't support window size.");
+    return {0, 0};
+}
+
+std::pair<int, int> PlatformDisplayServer::window_get_size_with_decorations(uintptr_t window_id) const {
+    LOG_WARNING("This display server doesn't support window size.");
+    return {0, 0};
+}
+
+void PlatformDisplayServer::window_set_pos(uintptr_t window_id, int x, int y) {
+    LOG_WARNING("This display server doesn't support window position.");
+}
+
+std::pair<int, int> PlatformDisplayServer::window_get_pos(uintptr_t window_id) const {
+    LOG_WARNING("This display server doesn't support window position.");
+    return {0, 0};
+}
+
+std::pair<int, int> PlatformDisplayServer::window_get_pos_with_decorations(uintptr_t window_id) const {
+    LOG_WARNING("This display server doesn't support window position.");
+    return {0, 0};
+}
+
+void PlatformDisplayServer::window_set_ime_enabled(uintptr_t window_id, bool enabled) {
+    LOG_WARNING("This display server doesn't support IME for window.");
+}
+
+bool PlatformDisplayServer::window_is_ime_enabled(uintptr_t window_id) const {
+    LOG_WARNING("This display server doesn't support IME for window.");
+    return false;
+}
+
+void PlatformDisplayServer::window_set_ime_position(uintptr_t window_id, int x, int y) {
+    LOG_WARNING("This display server doesn't support IME position.");
 }
 
 bool PlatformDisplayServer::is_dark_mode() {
@@ -202,10 +308,82 @@ bool PlatformDisplayServer::toast_notification_show(const std::string_view      
     return false;
 }
 
-std::shared_ptr<mimosa::PlatformTrayIcon> PlatformDisplayServer::create_system_tray_icon(const Image &          icon,
-                                                                                         const std::string_view hint) {
-    LOG_WARNING("This display server doesn't support system tray icon.");
-    return nullptr;
+uintptr_t
+PlatformDisplayServer::trayicon_create(const Image &icon, const std::string_view tooltip, TrayIconCallback &&handler) {
+    LOG_WARNING("This display server doesn't support tray-icon.");
+    return 0;
+}
+
+bool PlatformDisplayServer::trayicon_dismiss(uintptr_t tray_id) {
+    LOG_WARNING("This display server doesn't support tray-icon.");
+    return false;
+}
+
+void PlatformDisplayServer::trayicon_show(uintptr_t tray_id, bool show) {
+    LOG_WARNING("This display server doesn't support tray-icon.");
+}
+
+bool PlatformDisplayServer::trayicon_is_visible(uintptr_t tray_id) {
+    LOG_WARNING("This display server doesn't support tray-icon.");
+    return false;
+}
+
+Rect2 PlatformDisplayServer::trayicon_get_rect() const {
+    LOG_WARNING("This display server doesn't support tray-icon.");
+    return {};
+}
+
+Image PlatformDisplayServer::trayicon_get_icon() const {
+    LOG_WARNING("This display server doesn't support tray-icon.");
+    return {};
+}
+
+void PlatformDisplayServer::trayicon_set_icon(const Image &icon) {
+    LOG_WARNING("This display server doesn't support tray-icon.");
+}
+
+std::string PlatformDisplayServer::trayicon_get_tooltip() const {
+    LOG_WARNING("This display server doesn't support tray-icon.");
+    return {};
+}
+
+void PlatformDisplayServer::trayicon_set_tooltip(const std::string_view tooltip) {
+    LOG_WARNING("This display server doesn't support tray-icon.");
+}
+
+void PlatformDisplayServer::trayicon_pop_message(const std::string_view title,
+                                                 const std::string_view message,
+                                                 int                    timeout_ms) {
+    LOG_WARNING("This display server doesn't support tray-icon.");
+}
+
+void PlatformDisplayServer::trayicon_pop_message_icon(const std::string_view title,
+                                                      const std::string_view message,
+                                                      const Image &          icon,
+                                                      int                    timeout_ms) {
+    LOG_WARNING("This display server doesn't support tray-icon.");
+}
+
+void PlatformDisplayServer::trayicon_pop_message_icon(const std::string_view title,
+                                                      const std::string_view message,
+                                                      SystemIcon             icon,
+                                                      int                    timeout_ms) {
+    LOG_WARNING("This display server doesn't support tray-icon.");
+}
+
+int PlatformDisplayServer::hotkey_create_id() {
+    LOG_WARNING("This display server doesn't support hot-key id generation.");
+    return false;
+}
+
+bool PlatformDisplayServer::hotkey_register(int id, HotkeyModifier modifiers, int key_code, HotkeyCallback &&handler) {
+    LOG_WARNING("This display server doesn't support hot-key registration.");
+    return false;
+}
+
+bool PlatformDisplayServer::hotkey_remove(int id) {
+    LOG_WARNING("This display server doesn't support hot-key uninstallation.");
+    return false;
 }
 
 }; // namespace mimosa
