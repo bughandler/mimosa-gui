@@ -46,10 +46,22 @@ namespace mimosa {
 #define unlikely(x) x
 #endif
 
-#define ENUM_CLASS_OR(t, l, r) \
-    static_cast<t>(static_cast<std::underlying_type_t>(l) | static_cast<std::underlying_type_t>(r));
-#define ENUM_CLASS_AND(t, l, r) \
-    static_cast<t>(static_cast<std::underlying_type_t>(l) & static_cast<std::underlying_type_t>(r));
+#define MAKE_ENUM_CLASS_BITOPS(ENUM_CLS)                                                   \
+    friend ENUM_CLS operator|(ENUM_CLS lhs, ENUM_CLS rhs) {                                \
+        return static_cast<ENUM_CLS>(static_cast<std::underlying_type_t<ENUM_CLS>>(lhs) |  \
+                                     static_cast<std::underlying_type_t<ENUM_CLS>>(rhs));  \
+    }                                                                                      \
+    friend ENUM_CLS operator&(ENUM_CLS lhs, ENUM_CLS rhs) {                                \
+        return static_cast<ENUM_CLS>(static_cast<std::underlying_type_t<ENUM_CLS>>(lhs) &  \
+                                     static_cast<std::underlying_type_t<ENUM_CLS>>(rhs));  \
+    }                                                                                      \
+    friend ENUM_CLS operator^(ENUM_CLS lhs, ENUM_CLS rhs) {                                \
+        return static_cast<ENUM_CLS>(static_cast<std::underlying_type_t<ENUM_CLS>>(lhs) ^  \
+                                     static_cast<std::underlying_type_t<ENUM_CLS>>(rhs));  \
+    }                                                                                      \
+    friend ENUM_CLS operator~(ENUM_CLS lhs) {                                              \
+        return static_cast<ENUM_CLS>(~static_cast<std::underlying_type_t<ENUM_CLS>>(lhs)); \
+    }
 
 } // namespace mimosa
 #endif //_CORE_DEFINES_H_

@@ -33,12 +33,7 @@ class PlatformWindow {
         WINDOW_NO_RESIZABLE = 1 << 8,
         WINDOW_PASSTRHOUGH = 1 << 9,
     };
-    Flags operator|(Flags lhs, Flags rhs) {
-        return ENUM_CLASS_OR(NativeDialogOptions, lhs, rhs);
-    }
-    Flags operator&(Flags lhs, Flags rhs) {
-        return ENUM_CLASS_AND(NativeDialogOptions, lhs, rhs);
-    }
+    MAKE_ENUM_CLASS_BITOPS(Flags)
 
     virtual uintptr_t           window_id() const = 0;
     virtual void                show(Mode mode) = 0;
@@ -170,12 +165,7 @@ class PlatformDisplayServer {
         OPT_NO_RESOLVE_SYMLINK = 1 << 3,
         OPT_NO_CONFIRM_OVERWRITE = 1 << 4
     };
-    NativeDialogOptions operator|(NativeDialogOptions lhs, NativeDialogOptions rhs) {
-        return ENUM_CLASS_OR(NativeDialogOptions, lhs, rhs);
-    }
-    NativeDialogOptions operator&(NativeDialogOptions lhs, NativeDialogOptions rhs) {
-        return ENUM_CLASS_AND(NativeDialogOptions, lhs, rhs);
-    }
+    MAKE_ENUM_CLASS_BITOPS(NativeDialogOptions)
 
     enum class ClipboardDataFormat {
         kUnknown,
