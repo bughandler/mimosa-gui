@@ -58,29 +58,33 @@ class PlatformDisplayServer {
     // System theme
     //
 
-    virtual bool   is_dark_mode();
-    virtual Color3 get_system_accent_color();
-    virtual Color3 get_system_base_color();
+    virtual bool  is_dark_mode() const;
+    virtual Color get_system_accent_color() const;
+    virtual Color get_system_base_color() const;
 
     //
     // Screen
     //
 
     enum class Orientation {
-        kHorizontal,
-        kVetical,
+        kUnknown,
+        kLandscape,
+        kLandscapeFlipped,
+        kPortrait,
+        kPortraitFlipped,
     };
 
     virtual int                 get_screen_count() const = 0;
     virtual int                 get_primary_screen_index() const = 0;
-    virtual Orientation         get_scren_orientation(int screen_index) const = 0;
-    virtual void                set_screen_orientation(int screen_index, Orientation orientation) = 0;
-    virtual std::pair<int, int> get_screen_size(int screen_index) const = 0;
-    virtual std::pair<int, int> get_screen_work_size(int screen_index) const = 0;
-    virtual int                 get_screen_dpi(int screen_index) const = 0;
-    virtual int                 get_screen_scale_factor(int screen_index) const = 0;
     virtual int                 get_screen_by_rect(const Rect2 &rc) = 0;
+    virtual int                 get_screen_by_pos(int x, int y) = 0;
     virtual int                 get_screen_by_window(uintptr_t window_id) = 0;
+    virtual Orientation         get_scren_orientation(int screen_index) const = 0;
+    virtual bool                set_screen_orientation(int screen_index, Orientation orientation) = 0;
+    virtual std::pair<int, int> get_screen_size(int screen_index) const = 0;
+    virtual Rect2               get_screen_work_rect(int screen_index) const = 0;
+    virtual int                 get_screen_dpi(int screen_index) const = 0;
+    virtual float               get_screen_scale_factor(int screen_index) const = 0;
 
     //
     // Window management
@@ -141,7 +145,6 @@ class PlatformDisplayServer {
     virtual void                window_set_pos(uintptr_t window_id, int x, int y);
     virtual std::pair<int, int> window_get_pos(uintptr_t window_id) const;
     virtual std::pair<int, int> window_get_pos_with_decorations(uintptr_t window_id) const;
-    virtual int                 window_get_current_screen_index(uintptr_t window_id) const = 0;
     virtual void                window_set_current_screen(uintptr_t window_id, int screen_index) = 0;
     virtual void                window_set_ime_enabled(uintptr_t window_id, bool enabled) = 0;
     virtual bool                window_is_ime_enabled(uintptr_t window_id) const = 0;

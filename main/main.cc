@@ -3,6 +3,11 @@
 #endif
 
 #ifdef _WIN32
+// Windows specific global variables
+namespace mimosa {
+extern HMODULE gWinModule;
+}; // namespace mimosa
+
 BOOL WINAPI DllMain(HINSTANCE hinstDLL,  // handle to DLL module
                     DWORD     fdwReason, // reason for calling function
                     LPVOID    lpReserved)   // reserved
@@ -12,6 +17,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL,  // handle to DLL module
     case DLL_PROCESS_ATTACH:
         // Initialize once for each new process.
         // Return FALSE to fail DLL load.
+        mimosa::gWinModule = (HMODULE)hinstDLL;
         break;
 
     case DLL_THREAD_ATTACH:

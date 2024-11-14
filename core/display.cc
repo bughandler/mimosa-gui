@@ -152,16 +152,16 @@ void PlatformDisplayServer::window_set_ime_position(uintptr_t window_id, int x, 
     LOG_WARNING("This display server doesn't support IME position.");
 }
 
-bool PlatformDisplayServer::is_dark_mode() {
+bool PlatformDisplayServer::is_dark_mode() const {
     LOG_WARNING("This display server doesn't support dark mode.");
     return false;
 }
 
-Color3 PlatformDisplayServer::get_system_accent_color() {
+Color PlatformDisplayServer::get_system_accent_color() const {
     return {};
 }
 
-Color3 PlatformDisplayServer::get_system_base_color() {
+Color PlatformDisplayServer::get_system_base_color() const {
     return {};
 }
 

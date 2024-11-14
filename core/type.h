@@ -13,8 +13,8 @@ struct Rect2 {
     int width = 0, height = 0;
 };
 
-struct Color3 {
-    int r = 0, g = 0, b = 0;
+struct Color {
+    int r = 0, g = 0, b = 0, a = 0;
 };
 
 struct Image {
